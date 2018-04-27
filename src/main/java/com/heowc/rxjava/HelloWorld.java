@@ -1,4 +1,4 @@
-package com.heowc;
+package com.heowc.rxjava;
 
 import io.reactivex.Observable;
 
