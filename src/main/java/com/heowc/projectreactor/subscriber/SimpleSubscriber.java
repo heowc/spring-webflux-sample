@@ -1,4 +1,4 @@
-package com.heowc.projectrector.subscriber;
+package com.heowc.projectreactor.subscriber;
 
 import org.reactivestreams.Subscription;
 import reactor.core.publisher.BaseSubscriber;
