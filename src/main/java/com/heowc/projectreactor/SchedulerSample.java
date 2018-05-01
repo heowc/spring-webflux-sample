@@ -1,12 +1,14 @@
 package com.heowc.projectreactor;
 
-import com.google.common.base.Stopwatch;
+import org.springframework.util.StopWatch;
+import reactor.core.publisher.BaseSubscriber;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.SignalType;
 import reactor.core.scheduler.Schedulers;
 
 public class SchedulerSample {
 
-    private static final Stopwatch STOPWATCH = Stopwatch.createUnstarted();
+    private static final StopWatch STOPWATCH = new StopWatch();
 
     public static void main(String[] args) {
 
@@ -23,8 +25,13 @@ public class SchedulerSample {
                 return i * 2;
             })
             .log()
-            .doOnTerminate(() -> System.out.println(STOPWATCH.stop()))
             .subscribeOn(Schedulers.newParallel("sub"))
-            .subscribe(System.out::println);
+            .subscribe(new BaseSubscriber<Integer>() {
+                @Override
+                protected void hookFinally(SignalType type) {
+                    STOPWATCH.stop();
+                    System.out.println(STOPWATCH.prettyPrint());
+                }
+            });
     }
 }

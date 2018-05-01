@@ -1,13 +1,13 @@
 package com.heowc.projectreactor;
 
-import com.google.common.base.Stopwatch;
+import org.springframework.util.StopWatch;
 import reactor.core.publisher.BaseSubscriber;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Schedulers;
 
 public class ParallelFluxSample {
 
-    private static final Stopwatch STOPWATCH = Stopwatch.createUnstarted();
+    private static final StopWatch STOPWATCH = new StopWatch();
 
     public static void main(String[] args) {
         STOPWATCH.start();
@@ -15,7 +15,7 @@ public class ParallelFluxSample {
         Flux.range(1, 10)
                 .parallel()
                 .runOn(Schedulers.newParallel("pub"))
-//                .log()
+                .log()
                 .doOnNext(i -> {
                     try {
                         Thread.sleep(100L);
@@ -26,7 +26,8 @@ public class ParallelFluxSample {
                 .subscribe(new BaseSubscriber<Integer>() {
                     @Override
                     protected void hookOnComplete() {
-                        System.out.println(STOPWATCH.stop());
+                        STOPWATCH.stop();
+                        System.out.println(STOPWATCH.prettyPrint());
                     }
                 });
     }
