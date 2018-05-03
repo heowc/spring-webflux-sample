@@ -5,7 +5,7 @@
 
 ### 1. SELECT
 
-```
+```text
 2018-05-03 22:48:56.635 DEBUG 26826 --- [ctor-http-nio-2] o.h.e.t.internal.TransactionImpl         : begin
 2018-05-03 22:48:56.636 DEBUG 26826 --- [ctor-http-nio-2] o.h.e.t.internal.TransactionImpl         : committing
 2018-05-03 22:48:56.638 DEBUG 26826 --- [    find-sub-16] o.h.e.t.internal.TransactionImpl         : begin
@@ -144,5 +144,7 @@ Hibernate:
         id=?
 ```
 
-> nio Thread가 아닌 별도 Thread에서 동작되어 초기에 트랜잭션이 끊김
-> Publish와 Subscribe와 서로 다른 Thread로 동작하기 때문에 영속성이 깨짐(트랜잭션이 끊김)
+# 문제점
+
+1. nio Thread가 아닌 별도 Thread에서 동작되어 초기에 트랜잭션이 끊김
+2. Publisher와 Subscriber가 서로 다른 Thread로 동작하기 때문에 영속성이 깨짐(트랜잭션이 끊김)
