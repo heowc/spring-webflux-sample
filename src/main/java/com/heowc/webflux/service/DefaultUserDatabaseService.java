@@ -5,13 +5,11 @@ import com.heowc.webflux.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 @Service
-@Transactional
+//@Transactional
 public class DefaultUserDatabaseService implements UserDatabaseService {
 
     private final UserRepository repository;
@@ -25,8 +23,8 @@ public class DefaultUserDatabaseService implements UserDatabaseService {
     public Mono<User> findById(Long id) {
         return Mono.defer(() -> Mono.just(repository.findById(id).orElse(new User())))
                 .log()
-                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "not exist")))
-                .subscribeOn(Schedulers.newParallel("find-sub"));
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "not exist")));
+//                .subscribeOn(Schedulers.newParallel("find-sub"));
     }
 
     @Override
@@ -34,7 +32,7 @@ public class DefaultUserDatabaseService implements UserDatabaseService {
         Mono.defer(() -> Mono.just(user))
             .log()
             .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "db error")))
-            .publishOn(Schedulers.newParallel("add-pub"))
+//            .publishOn(Schedulers.newParallel("add-pub"))
             .doOnNext(repository::save)
             .subscribe();
     }
@@ -48,14 +46,14 @@ public class DefaultUserDatabaseService implements UserDatabaseService {
                 u.setFullAddress(user.getFullAddress());
                 return u;
             })
-            .publishOn(Schedulers.newParallel("modify-pub"))
+//            .publishOn(Schedulers.newParallel("modify-pub"))
             .doOnNext(repository::save)
             .subscribe();
     }
 
     public void remove(Long id) {
         findById(id)
-            .publishOn(Schedulers.newParallel("remove-pub"))
+//            .publishOn(Schedulers.newParallel("remove-pub"))
             .doOnNext(repository::delete)
             .subscribe();
     }
