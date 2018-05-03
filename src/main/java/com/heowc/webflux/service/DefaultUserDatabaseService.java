@@ -31,7 +31,7 @@ public class DefaultUserDatabaseService implements UserDatabaseService {
 
     @Override
     public void add(User user) {
-        Mono.defer(() -> Mono.just(repository.save(user)))
+        Mono.defer(() -> Mono.just(user))
             .log()
             .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "db error")))
             .publishOn(Schedulers.newParallel("add-pub"))
