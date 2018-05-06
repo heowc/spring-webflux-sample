@@ -31,24 +31,21 @@ public class UserHandler {
     }
 
     public Mono<ServerResponse> add(ServerRequest request) {
-        request.bodyToMono(User.class)
-                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "incorrect body data")))
-                .subscribe(service::add);
-        return ServerResponse.ok().build();
+        Mono<User> userMono = request.bodyToMono(User.class)
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "incorrect body data")));
+        return ServerResponse.ok().build(service.add(userMono));
     }
 
     public Mono<ServerResponse> modify(ServerRequest request) {
-        request.bodyToMono(User.class)
-                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "incorrect body data")))
-                .subscribe(service::modify);
-        return ServerResponse.ok().build();
+        Mono<User> userMono = request.bodyToMono(User.class)
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "incorrect body data")));
+        return ServerResponse.ok().build(service.modify(userMono));
     }
 
     public Mono<ServerResponse> remove(ServerRequest request) {
         try {
             String id = request.pathVariable("id");
-            service.remove(Long.valueOf(id));
-            return ServerResponse.ok().build();
+            return ServerResponse.ok().build(service.remove(Long.valueOf(id)));
         } catch (NumberFormatException e) {
             return ServerResponse.badRequest().build();
         }

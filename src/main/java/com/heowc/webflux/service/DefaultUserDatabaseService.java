@@ -7,9 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 @Service
-//@Transactional
 public class DefaultUserDatabaseService implements UserDatabaseService {
 
     private final UserRepository repository;
@@ -21,40 +21,35 @@ public class DefaultUserDatabaseService implements UserDatabaseService {
 
     @Override
     public Mono<User> findById(Long id) {
-        return Mono.defer(() -> Mono.just(repository.findById(id).orElse(new User())))
+        return Mono.defer(() -> Mono.justOrEmpty(repository.findById(id)))
                 .log()
-                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "not exist")));
-//                .subscribeOn(Schedulers.newParallel("find-sub"));
+                .subscribeOn(Schedulers.newParallel("find-sub"));
     }
 
     @Override
-    public void add(User user) {
-        Mono.defer(() -> Mono.just(user))
-            .log()
-            .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "db error")))
-//            .publishOn(Schedulers.newParallel("add-pub"))
-            .doOnNext(repository::save)
-            .subscribe();
+    public Mono<Void> add(Mono<User> user) {
+            return user.publishOn(Schedulers.newParallel("add-pub"))
+                    .log()
+                    .doOnNext(repository::save)
+                    .then();
     }
 
     @Override
-    public void modify(User user) {
-        findById(user.getId())
-            .map(u -> {
-                u.setFullName(user.getFullName());
-                u.setAge(user.getAge());
-                u.setFullAddress(user.getFullAddress());
-                return u;
-            })
-//            .publishOn(Schedulers.newParallel("modify-pub"))
-            .doOnNext(repository::save)
-            .subscribe();
+    public Mono<Void> modify(Mono<User> userMono) {
+        return userMono.publishOn(Schedulers.newParallel("modify-pub"))
+                .flatMap(u -> Mono.justOrEmpty(repository.findById(u.getId())))
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "not exist")))
+                .log()
+                .doOnNext(repository::save)
+                .then();
     }
 
-    public void remove(Long id) {
-        findById(id)
-//            .publishOn(Schedulers.newParallel("remove-pub"))
-            .doOnNext(repository::delete)
-            .subscribe();
+    public Mono<Void> remove(Long id) {
+        return Mono.just(id)
+                .publishOn(Schedulers.newParallel("remove-pub"))
+                .flatMap(i -> Mono.justOrEmpty(repository.findById(i)))
+                .log()
+                .doOnNext(repository::delete)
+                .then();
     }
 }

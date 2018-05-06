@@ -7,9 +7,9 @@ public interface UserDatabaseService {
 
     Mono<User> findById(Long id);
 
-    void add(User user);
+    Mono<Void> add(Mono<User> user);
 
-    void modify(User user);
+    Mono<Void> modify(Mono<User> user);
 
-    void remove(Long id);
+    Mono<Void> remove(Long id);
 }
