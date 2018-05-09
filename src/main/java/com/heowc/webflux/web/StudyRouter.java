@@ -11,12 +11,13 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 @Configuration
-public class UserRouter {
+public class StudyRouter {
 
     @Bean
-    public RouterFunction<ServerResponse> routeByUser(UserHandler handler) {
-        return nest(path("/user"),
-                route(GET("/{id}"), handler::findById)
+    public RouterFunction<ServerResponse> routeByStudy(StudyHandler handler) {
+        return nest(path("/study"),
+                route(GET("/"), handler::findAll)
+                .andRoute(GET("/{id}"), handler::findById)
                 .andRoute(POST("/").and(accept(MediaType.APPLICATION_JSON_UTF8)), handler::add)
                 .andRoute(PUT("/").and(accept(MediaType.APPLICATION_JSON_UTF8)), handler::modify)
                 .andRoute(DELETE("/{id}"), handler::remove));
