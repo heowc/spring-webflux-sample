@@ -10,12 +10,12 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 @Service
-public class DefaultUserDatabaseService implements UserDatabaseService {
+public class DefaultUserQueryService implements UserQueryService {
 
     private final UserRepository repository;
 
     @Autowired
-    public DefaultUserDatabaseService(UserRepository repository) {
+    public DefaultUserQueryService(UserRepository repository) {
         this.repository = repository;
     }
 

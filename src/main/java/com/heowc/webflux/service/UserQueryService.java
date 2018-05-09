@@ -3,7 +3,7 @@ package com.heowc.webflux.service;
 import com.heowc.webflux.doamin.User;
 import reactor.core.publisher.Mono;
 
-public interface UserDatabaseService {
+public interface UserQueryService {
 
     Mono<User> findById(Long id);
 
