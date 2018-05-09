@@ -1,7 +1,7 @@
 package com.heowc.webflux.web;
 
 import com.heowc.webflux.doamin.User;
-import com.heowc.webflux.service.UserDatabaseService;
+import com.heowc.webflux.service.UserQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -14,10 +14,10 @@ import reactor.core.publisher.Mono;
 @Configuration
 public class UserHandler {
 
-    private final UserDatabaseService service;
+    private final UserQueryService service;
 
     @Autowired
-    public UserHandler(UserDatabaseService service) {
+    public UserHandler(UserQueryService service) {
         this.service = service;
     }
 
