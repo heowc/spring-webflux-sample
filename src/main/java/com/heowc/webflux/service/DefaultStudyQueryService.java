@@ -30,17 +30,28 @@ public class DefaultStudyQueryService implements StudyQueryService {
     }
 
     @Override
-    public Mono<Study> add(Study study) {
-        return null;
+    public Mono<Study> add(Mono<Study> studyMono) {
+        return studyMono.flatMap(repository::save);
     }
 
     @Override
-    public Mono<Void> modify(Mono<Study> studyMono) {
-        return null;
+    public Mono<Study> modify(Mono<Study> studyMono) {
+        return studyMono
+                .flatMap(s -> repository.findById(s.getId())
+                        .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "incorrect body data")))
+                        .map(s1 -> {
+                            Study study = new Study();
+                            study.setTitle(s.getTitle());
+                            study.setContent(s.getContent());
+                            return study;
+                        }))
+                .flatMap(repository::save);
     }
 
     @Override
     public Mono<Void> remove(String id) {
-        return null;
+        return Mono.defer(() -> repository.findById(id))
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "incorrect param data")))
+                .flatMap(repository::delete);
     }
 }

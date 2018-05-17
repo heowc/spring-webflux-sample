@@ -10,9 +10,9 @@ public interface StudyQueryService {
 
     Mono<Study> findById(String id);
 
-    Mono<Study> add(Study study);
+    Mono<Study> add(Mono<Study> study);
 
-    Mono<Void> modify(Mono<Study> studyMono);
+    Mono<Study> modify(Mono<Study> studyMono);
 
     Mono<Void> remove(String id);
 }
