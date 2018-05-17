@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -17,11 +16,6 @@ public class DefaultStudyQueryService implements StudyQueryService {
     @Autowired
     public DefaultStudyQueryService(StudyRepository repository) {
         this.repository = repository;
-    }
-
-    @Override
-    public Flux<Study> findAll() {
-        return repository.findAll();
     }
 
     @Override

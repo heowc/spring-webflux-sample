@@ -5,7 +5,6 @@ import com.heowc.webflux.service.StudyQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,10 +18,6 @@ public class StudyHandler {
     @Autowired
     public StudyHandler(StudyQueryService service) {
         this.service = service;
-    }
-
-    public Mono<ServerResponse> findAll(ServerRequest request) {
-        return ServerResponse.ok().body(BodyInserters.fromPublisher(service.findAll(), Study.class));
     }
 
     public Mono<ServerResponse> findById(ServerRequest request) {

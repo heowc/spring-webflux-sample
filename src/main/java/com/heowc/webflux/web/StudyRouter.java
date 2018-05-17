@@ -16,8 +16,7 @@ public class StudyRouter {
     @Bean
     public RouterFunction<ServerResponse> routeByStudy(StudyHandler handler) {
         return nest(path("/study"),
-                route(GET("/"), handler::findAll)
-                .andRoute(GET("/{id}"), handler::findById)
+                route(GET("/{id}"), handler::findById)
                 .andRoute(POST("/").and(accept(MediaType.APPLICATION_JSON_UTF8)), handler::add)
                 .andRoute(PUT("/").and(accept(MediaType.APPLICATION_JSON_UTF8)), handler::modify)
                 .andRoute(DELETE("/{id}"), handler::remove));
