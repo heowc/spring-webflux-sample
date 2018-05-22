@@ -7,9 +7,9 @@ public interface UserQueryService {
 
     Mono<User> findById(Long id);
 
-    Mono<Void> add(Mono<User> user);
+    Mono<User> add(Mono<User> user);
 
-    Mono<Void> modify(Mono<User> user);
+    Mono<User> modify(Mono<User> user);
 
     Mono<Void> remove(Long id);
 }

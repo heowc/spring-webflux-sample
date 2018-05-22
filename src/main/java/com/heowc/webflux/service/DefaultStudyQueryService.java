@@ -32,7 +32,7 @@ public class DefaultStudyQueryService implements StudyQueryService {
     public Mono<Study> modify(Mono<Study> studyMono) {
         return studyMono
                 .flatMap(s -> repository.findById(s.getId())
-                        .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "incorrect body data")))
+                        .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "not exist")))
                         .map(s1 -> {
                             Study study = new Study();
                             study.setTitle(s.getTitle());

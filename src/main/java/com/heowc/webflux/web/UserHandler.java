@@ -5,7 +5,6 @@ import com.heowc.webflux.service.UserQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,7 +23,7 @@ public class UserHandler {
     public Mono<ServerResponse> findById(ServerRequest request) {
         try {
             String id = request.pathVariable("id");
-            return ServerResponse.ok().body(BodyInserters.fromPublisher(service.findById(Long.valueOf(id)), User.class));
+            return ServerResponse.ok().body(service.findById(Long.valueOf(id)), User.class);
         } catch (NumberFormatException e) {
             return ServerResponse.badRequest().build();
         }
@@ -33,13 +32,13 @@ public class UserHandler {
     public Mono<ServerResponse> add(ServerRequest request) {
         Mono<User> userMono = request.bodyToMono(User.class)
                 .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "incorrect body data")));
-        return ServerResponse.ok().build(service.add(userMono));
+        return ServerResponse.ok().body(service.add(userMono), User.class);
     }
 
     public Mono<ServerResponse> modify(ServerRequest request) {
         Mono<User> userMono = request.bodyToMono(User.class)
                 .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "incorrect body data")));
-        return ServerResponse.ok().build(service.modify(userMono));
+        return ServerResponse.ok().body(service.modify(userMono), User.class);
     }
 
     public Mono<ServerResponse> remove(ServerRequest request) {
