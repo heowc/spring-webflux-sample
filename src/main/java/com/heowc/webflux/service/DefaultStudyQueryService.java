@@ -34,17 +34,16 @@ public class DefaultStudyQueryService implements StudyQueryService {
                 .flatMap(s -> repository.findById(s.getId())
                         .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "not exist")))
                         .map(s1 -> {
-                            Study study = new Study();
-                            study.setTitle(s.getTitle());
-                            study.setContent(s.getContent());
-                            return study;
+                            s1.setTitle(s.getTitle());
+                            s1.setContent(s.getContent());
+                            return s1;
                         }))
                 .flatMap(repository::save);
     }
 
     @Override
     public Mono<Void> remove(String id) {
-        return Mono.defer(() -> repository.findById(id))
+        return repository.findById(id)
                 .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "incorrect param data")))
                 .flatMap(repository::delete);
     }
