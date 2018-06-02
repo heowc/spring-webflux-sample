@@ -6,5 +6,3 @@
 - └─ [우선, Reactive Mongo를 사용하면서 Best Practice를 찾아보자](./reactive-mongo-start.md)
 
 - [RDB를 사용하는 경우에는 그냥.. `@Async`와 `CompletableFuture`를 사용하자](./reactivex-with-rdb.md)
-
-https://github.com/heowc/SpringBootSample/tree/master/SpringBootWebFlux
